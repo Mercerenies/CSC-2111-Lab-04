@@ -10,6 +10,12 @@
 #include "Text.h"
 using CSC2110::String;
 
+///A circular, doubly-linked list structure
+/**
+ * The circular list structure can be written to and read from with efficiency that exceeds
+ * that of the singly linked list. It offers a single positional iterator that can travel
+ * in either direction in a circle about the loop of the list.
+ */
 template < class T >
 class CircularList : public Drawable
 {
@@ -20,21 +26,34 @@ class CircularList : public Drawable
       int sze;
       DoubleNode<T>* find(int index);
       void animateMovement(bool clockwise, DoubleNode<T>* where);
+      
+      static int mathMod(int x, int y);
 
       bool update_active;
       Update* gui;
 
    public:
+      ///Construct an empty circular list structure
       CircularList();
+      ///Destroy the list structure without destroying the elements themselves
       virtual ~CircularList();
+      ///Check whether the list is devoid of contents
       bool isEmpty();
+      ///Return the number of elements in the list
       int size();
+      ///Remove all elements from the list
       void removeAll();
+      ///Get the element at the specified index
       T* get(int index);
+      ///Add an element to the specified index
       void add(int index, T* item);
+      ///Add an element to the tail end of the list
       void add(T* item);
+      ///Remove the element at the specified index
       void remove(int index);
+      ///Set the given position to the given value element
       void set(int index, T* item);
+      ///Yield and iterator to the circular list
       CircularListIterator<T>* iterator();
 
       void addListener(Update* gui);
@@ -43,11 +62,15 @@ class CircularList : public Drawable
 
 };
 
+template <typename T>
+int CircularList<T>::mathMod(int x, int y) {
+    return  (x % y + y) % y; // Simulate mathematical modulus, supporting negative numbers
+}
+
 template < class T >
 DoubleNode<T>* CircularList<T>::find(int index) 
 {
    DoubleNode<T>* where = loc;
-   int min_dist;
    int dist_prev;  //prev links (negative)
    int dist_next;  //next links (positive)
 
@@ -56,34 +79,12 @@ DoubleNode<T>* CircularList<T>::find(int index)
       return NULL;
    }
 
-   //DO THIS
-   //complete the distance calculations below
-   //loc_pos is the index that loc currently points to
-   //index is the requested index
- 
-   if (index >= loc_pos)
+   dist_prev = mathMod(loc_pos - index, sze);
+   dist_next = mathMod(index - loc_pos, sze);
+
+   if (dist_prev < dist_next)  //negative distance means use prev links, counterclockwise
    {
-                                    //distance without the bridge (next refs, positive)
-                                    //distance using the bridge (prev refs, negative)
-   }
-   else
-   {
-                                    //distance without the bridge (prev refs, negative)
-                                    //distance using the bridge (next refs, positive)
-   }
-
-   //DO THIS which distance is smaller?
-   //find the minimum distance using absolute value
-   //set min_dist to the smaller value, keeping the sign
-
-
-
-
-
-
-   if (min_dist < 0)  //negative distance means use prev links, counterclockwise
-   {
-      for (int i = 1; i <= -1*min_dist; i++)
+      for (int i = 1; i <= dist_prev; i++)
       {
          where = where->getPrev();
          animateMovement(false, where);
@@ -91,7 +92,7 @@ DoubleNode<T>* CircularList<T>::find(int index)
    }
    else  //positive distance means use next links, clockwise
    {
-      for (int i = 1; i <= min_dist; i++)
+      for (int i = 1; i <= dist_next; i++)
       {
          where = where->getNext();
          animateMovement(true, where);
