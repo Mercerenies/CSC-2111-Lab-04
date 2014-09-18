@@ -10,6 +10,12 @@
 #include "Text.h"
 using CSC2110::String;
 
+///A circular, doubly-linked list structure
+/**
+ * The circular list structure can be written to and read from with efficiency that exceeds
+ * that of the singly linked list. It offers a single positional iterator that can travel
+ * in either direction in a circle about the loop of the list.
+ */
 template < class T >
 class CircularList : public Drawable
 {
@@ -27,16 +33,27 @@ class CircularList : public Drawable
       Update* gui;
 
    public:
+      ///Construct an empty circular list structure
       CircularList();
+      ///Destroy the list structure without destroying the elements themselves
       virtual ~CircularList();
+      ///Check whether the list is devoid of contents
       bool isEmpty();
+      ///Return the number of elements in the list
       int size();
+      ///Remove all elements from the list
       void removeAll();
+      ///Get the element at the specified index
       T* get(int index);
+      ///Add an element to the specified index
       void add(int index, T* item);
+      ///Add an element to the tail end of the list
       void add(T* item);
+      ///Remove the element at the specified index
       void remove(int index);
+      ///Set the given position to the given value element
       void set(int index, T* item);
+      ///Yield and iterator to the circular list
       CircularListIterator<T>* iterator();
 
       void addListener(Update* gui);
