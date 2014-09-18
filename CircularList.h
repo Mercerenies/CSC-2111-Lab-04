@@ -176,7 +176,7 @@ void CircularList<T>::remove(int index)
         next_node->setPrev(prev_node);
 
         loc = next_node;
-        loc_pos = (index + 1)%(sze - 1);
+        loc_pos = (index%(sze - 1) + 1);
 
       }
       sze--;
