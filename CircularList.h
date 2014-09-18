@@ -20,6 +20,8 @@ class CircularList : public Drawable
       int sze;
       DoubleNode<T>* find(int index);
       void animateMovement(bool clockwise, DoubleNode<T>* where);
+      
+      static int mathMod(int x, int y);
 
       bool update_active;
       Update* gui;
@@ -43,11 +45,15 @@ class CircularList : public Drawable
 
 };
 
+template <typename T>
+int CircularList<T>::mathMod(int x, int y) {
+    return  (x % y + y) % y; // Simulate mathematical modulus, supporting negative numbers
+}
+
 template < class T >
 DoubleNode<T>* CircularList<T>::find(int index) 
 {
    DoubleNode<T>* where = loc;
-   int min_dist;
    int dist_prev;  //prev links (negative)
    int dist_next;  //next links (positive)
 
@@ -56,34 +62,12 @@ DoubleNode<T>* CircularList<T>::find(int index)
       return NULL;
    }
 
-   //DO THIS
-   //complete the distance calculations below
-   //loc_pos is the index that loc currently points to
-   //index is the requested index
- 
-   if (index >= loc_pos)
+   dist_prev = mathMod(loc_pos - index, sze);
+   dist_next = mathMod(index - loc_pos, sze);
+
+   if (dist_prev < dist_next)  //negative distance means use prev links, counterclockwise
    {
-                                    //distance without the bridge (next refs, positive)
-                                    //distance using the bridge (prev refs, negative)
-   }
-   else
-   {
-                                    //distance without the bridge (prev refs, negative)
-                                    //distance using the bridge (next refs, positive)
-   }
-
-   //DO THIS which distance is smaller?
-   //find the minimum distance using absolute value
-   //set min_dist to the smaller value, keeping the sign
-
-
-
-
-
-
-   if (min_dist < 0)  //negative distance means use prev links, counterclockwise
-   {
-      for (int i = 1; i <= -1*min_dist; i++)
+      for (int i = 1; i <= dist_prev; i++)
       {
          where = where->getPrev();
          animateMovement(false, where);
@@ -91,7 +75,7 @@ DoubleNode<T>* CircularList<T>::find(int index)
    }
    else  //positive distance means use next links, clockwise
    {
-      for (int i = 1; i <= min_dist; i++)
+      for (int i = 1; i <= dist_next; i++)
       {
          where = where->getNext();
          animateMovement(true, where);
